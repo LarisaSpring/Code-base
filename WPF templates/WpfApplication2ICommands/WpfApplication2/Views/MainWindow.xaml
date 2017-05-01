@@ -1,0 +1,88 @@
+﻿<Window x:Class="WpfApplication2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApplication2"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525"
+        DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ToolBar HorizontalContentAlignment="Right" >
+            <Button Name="AddButton" Content="Add new" Click="OnAddButton_Click" ToolTip="Add new work permit to list." HorizontalAlignment="Right"/>
+            <Button Name="SaveButton" Content="Save" Click="OnSaveButton_Click" ToolTip="Save changes." HorizontalAlignment="Right" Visibility="Collapsed"/>
+            <Button Name="DeleteButton" Content="Delete" Click="OnDeleteButton_Click" ToolTip="Delete work permit from the list." HorizontalAlignment="Right" Visibility="Collapsed"/>
+            <Button Name="SortButton" Content="Sort by name" Click="OnSortButton_Click" HorizontalAlignment="Right"/>
+            <Button Content="TryICommand" Command="{Binding DoSomethingCommand}"/>
+
+            <Button Content="Do something with selected item">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding DoSomethingCommand2}" 
+                                CommandParameter="{Binding SelectedItem, 
+                                                   ElementName=ListBox1}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+        </ToolBar>
+
+        <Grid Margin="10" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="7*"/>
+            </Grid.ColumnDefinitions>
+            
+            <ListBox x:Name="ListBox1" Grid.Column="0" Margin="0 0 10 0" ItemsSource="{Binding WorkPermits}" SelectedItem="{Binding SelectedPermit}" SelectionChanged="PermitsList_OnSelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Grid Grid.Column="1" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Name"/>
+                        <TextBox Grid.Column="1" Text="{Binding SelectedPermit.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Description"/>
+                        <TextBox Grid.Column="1" Text="{Binding SelectedPermit.Description, Mode=TwoWay}"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Valid from"/>
+                        <xctk:DateTimePicker Grid.Column="1" Text="{Binding SelectedPermit.PeriodFrom}" Value="{Binding SelectedPermit.PeriodFrom}"/>
+                        <Label Grid.Column="2" Content="Valid to"/>
+                        <xctk:DateTimePicker Grid.Column="3" Text="{Binding SelectedPermit.PeriodTo}" Value="{Binding SelectedPermit.PeriodTo}"/>
+                    </Grid>
+                </StackPanel>
+                
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
